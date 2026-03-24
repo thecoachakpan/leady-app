@@ -1,0 +1,7 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[template.environment]
+  VITE_SUPABASE_URL = { title = "Supabase URL", description = "Your Supabase Project URL (e.g., https://xyz.supabase.co)" }
+  VITE_SUPABASE_ANON_KEY = { title = "Supabase Anon Key", description = "Your Supabase Public Anon Key" }

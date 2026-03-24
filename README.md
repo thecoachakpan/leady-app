@@ -1,4 +1,12 @@
-# React + TypeScript + Vite
+# Leady - Professional Invoice & Receipt Generator
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/thecoachakpan/leady-app)
+
+Leady is a modern web application designed for freelancers and small businesses to manage invoices, clients, and receipts with ease.
+
+## 🚀 One-Click Deployment
+
+Click the button above to deploy your own instance of Leady to Netlify instantly. You will need your Supabase Project URL and Anon Key during setup.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

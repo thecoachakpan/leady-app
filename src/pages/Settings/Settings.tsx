@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import { supabase } from '../../lib/supabase';
-import { Save, User, Building2, CreditCard } from 'lucide-react';
+import { Save, User, Building2, CreditCard, Palette } from 'lucide-react';
 import './Settings.css';
 
 const fetchProfile = async () => {
@@ -32,7 +32,30 @@ export const Settings = () => {
     website: ''
   });
 
-  const { data: profile, mutate } = useSWR('profile', fetchProfile);
+  const [appSettings, setAppSettings] = useState({
+    app_name: 'Leady',
+    logo_url: '',
+    primary_color: '#2563eb'
+  });
+
+  const { data: profile, mutate: mutateProfile } = useSWR('profile', fetchProfile);
+
+  // Fetch App Settings
+  useEffect(() => {
+    const fetchAppSettings = async () => {
+      const { data } = await supabase.from('app_settings').select('*').single();
+      if (data) {
+        setAppSettings({
+          app_name: data.app_name || 'Leady',
+          logo_url: data.logo_url || '',
+          primary_color: data.primary_color || '#2563eb'
+        });
+        // Apply primary color globally
+        document.documentElement.style.setProperty('--primary', data.primary_color);
+      }
+    };
+    fetchAppSettings();
+  }, []);
 
   useEffect(() => {
     if (profile) {
@@ -69,7 +92,23 @@ export const Settings = () => {
         });
 
       if (error) throw error;
-      mutate();
+      mutateProfile();
+      
+      // Also update app settings
+      const { data: currentSettings } = await supabase.from('app_settings').select('id').single();
+      const { error: appError } = await supabase
+        .from('app_settings')
+        .upsert({ 
+          id: currentSettings?.id,
+          ...appSettings,
+          updated_at: new Date()
+        });
+      
+      if (appError) throw appError;
+      
+      // Apply color immediately
+      document.documentElement.style.setProperty('--primary', appSettings.primary_color);
+
       setMessage({ type: 'success', text: 'Settings updated successfully!' });
     } catch (err: any) {
       console.error('Error updating profile:', err);
@@ -114,7 +153,6 @@ export const Settings = () => {
                 </div>
                 <div className="input-group">
                   <label>Business Name</label>
-
                   <input 
                     type="text" 
                     placeholder="e.g. Acme Studio"
@@ -144,7 +182,7 @@ export const Settings = () => {
               </div>
             </div>
 
-            {/* Personal/Contact Section */}
+            {/* Contact Section */}
             <div className="settings-card glass">
               <div className="card-header">
                 <User size={20} />
@@ -168,18 +206,54 @@ export const Settings = () => {
                     onChange={e => setFormData({...formData, profession: e.target.value})}
                   />
                 </div>
+              </div>
+            </div>
+
+            {/* App Branding Section */}
+            <div className="settings-card glass box-highlight">
+              <div className="card-header">
+                <Palette size={20} />
+                <h3>App Branding (Whitelabel)</h3>
+              </div>
+              <div className="card-body">
                 <div className="input-group">
-                  <label>Industry</label>
+                  <label>Public App Name</label>
                   <input 
                     type="text" 
-                    value={formData.industry}
-                    onChange={e => setFormData({...formData, industry: e.target.value})}
+                    placeholder="e.g. My Website Builder"
+                    value={appSettings.app_name}
+                    onChange={e => setAppSettings({...appSettings, app_name: e.target.value})}
+                  />
+                  <p className="input-hint">This name appears in the browser tab and sidebar.</p>
+                </div>
+                <div className="input-group">
+                  <label>Primary Brand Color</label>
+                  <div className="color-input-wrapper">
+                    <input 
+                      type="color" 
+                      value={appSettings.primary_color}
+                      onChange={e => setAppSettings({...appSettings, primary_color: e.target.value})}
+                    />
+                    <input 
+                      type="text" 
+                      value={appSettings.primary_color}
+                      onChange={e => setAppSettings({...appSettings, primary_color: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className="input-group">
+                  <label>Logo URL</label>
+                  <input 
+                    type="text" 
+                    placeholder="https://..."
+                    value={appSettings.logo_url}
+                    onChange={e => setAppSettings({...appSettings, logo_url: e.target.value})}
                   />
                 </div>
               </div>
             </div>
 
-            {/* Application Settings */}
+            {/* Preferences */}
             <div className="settings-card glass">
               <div className="card-header">
                 <CreditCard size={20} />

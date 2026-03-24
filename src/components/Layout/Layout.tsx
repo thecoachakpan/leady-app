@@ -1,9 +1,24 @@
 import { Outlet, NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, Receipt, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, Receipt, Settings as SettingsIcon, LogOut } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import './Layout.css';
 
 export const Layout = () => {
+  const [branding, setBranding] = useState({ app_name: 'Leady', logo_url: '' });
+
+  useEffect(() => {
+    const fetchBranding = async () => {
+      const { data } = await supabase.from('app_settings').select('app_name, logo_url').single();
+      if (data) {
+        setBranding({
+          app_name: data.app_name || 'Leady',
+          logo_url: data.logo_url || ''
+        });
+      }
+    };
+    fetchBranding();
+  }, []);
   const handleLogout = async () => {
     await supabase.auth.signOut();
   };
@@ -13,8 +28,12 @@ export const Layout = () => {
       <aside className="sidebar glass">
         <div className="sidebar-header">
           <div className="logo">
-            <div className="logo-icon">L</div>
-            <span className="logo-text">Leady</span>
+            {branding.logo_url ? (
+              <img src={branding.logo_url} alt="Logo" className="logo-img" />
+            ) : (
+              <div className="logo-icon">{branding.app_name[0]}</div>
+            )}
+            <span className="logo-text">{branding.app_name}</span>
           </div>
         </div>
         
@@ -32,7 +51,7 @@ export const Layout = () => {
             <span>Invoices</span>
           </NavLink>
           <NavLink to="/settings" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-            <Settings size={20} />
+            <SettingsIcon size={20} />
             <span>Settings</span>
           </NavLink>
         </nav>

@@ -50,6 +50,20 @@ function App() {
       setSession(session);
     });
 
+    // Fetch and apply branding
+    const fetchBranding = async () => {
+      try {
+        const { data } = await supabase.from('app_settings').select('app_name, primary_color').single();
+        if (data) {
+          document.title = data.app_name || 'Leady';
+          document.documentElement.style.setProperty('--primary', data.primary_color || '#2563eb');
+        }
+      } catch (err) {
+        console.error('Failed to fetch branding:', err);
+      }
+    };
+    fetchBranding();
+
     return () => subscription.unsubscribe();
   }, []);
 

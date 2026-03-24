@@ -3,6 +3,7 @@ import useSWR from 'swr';
 import { supabase } from '../../lib/supabase';
 import { Save, User, Building2, CreditCard, Palette } from 'lucide-react';
 import './Settings.css';
+import { useBranding } from '../../lib/BrandingContext';
 
 const fetchProfile = async () => {
   const { data: { user } } = await supabase.auth.getUser();
@@ -32,30 +33,14 @@ export const Settings = () => {
     website: ''
   });
 
+  const { app_name, logo_url, primary_color, refreshBranding } = useBranding();
   const [appSettings, setAppSettings] = useState({
-    app_name: 'Leady',
-    logo_url: '',
-    primary_color: '#2563eb'
+    app_name,
+    logo_url,
+    primary_color
   });
 
   const { data: profile, mutate: mutateProfile } = useSWR('profile', fetchProfile);
-
-  // Fetch App Settings
-  useEffect(() => {
-    const fetchAppSettings = async () => {
-      const { data } = await supabase.from('app_settings').select('*').single();
-      if (data) {
-        setAppSettings({
-          app_name: data.app_name || 'Leady',
-          logo_url: data.logo_url || '',
-          primary_color: data.primary_color || '#2563eb'
-        });
-        // Apply primary color globally
-        document.documentElement.style.setProperty('--primary', data.primary_color);
-      }
-    };
-    fetchAppSettings();
-  }, []);
 
   useEffect(() => {
     if (profile) {
@@ -106,8 +91,8 @@ export const Settings = () => {
       
       if (appError) throw appError;
       
-      // Apply color immediately
-      document.documentElement.style.setProperty('--primary', appSettings.primary_color);
+      // Refresh global branding
+      await refreshBranding();
 
       setMessage({ type: 'success', text: 'Settings updated successfully!' });
     } catch (err: any) {

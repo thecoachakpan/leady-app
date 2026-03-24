@@ -13,9 +13,12 @@ import { InvoiceDetails } from './pages/Invoices/InvoiceDetails';
 import { Settings } from './pages/Settings/Settings';
 
 
-function App() {
+import { BrandingProvider, useBranding } from './lib/BrandingContext';
+
+function AppContent() {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { loading: brandingLoading } = useBranding();
 
   useEffect(() => {
     if (!isSupabaseConfigured) {
@@ -50,28 +53,14 @@ function App() {
       setSession(session);
     });
 
-    // Fetch and apply branding
-    const fetchBranding = async () => {
-      try {
-        const { data } = await supabase.from('app_settings').select('app_name, primary_color').single();
-        if (data) {
-          document.title = data.app_name || 'Leady';
-          document.documentElement.style.setProperty('--primary', data.primary_color || '#2563eb');
-        }
-      } catch (err) {
-        console.error('Failed to fetch branding:', err);
-      }
-    };
-    fetchBranding();
-
     return () => subscription.unsubscribe();
   }, []);
 
-  if (loading) {
+  if (loading || brandingLoading) {
     return (
       <div className="loading-screen">
         <div className="loader"></div>
-        <p>Loading Leady...</p>
+        <p>Loading...</p>
       </div>
     );
   }
@@ -111,10 +100,17 @@ function App() {
           <Route path="/invoices" element={<Invoices />} />
           <Route path="/invoices/:id" element={<InvoiceDetails />} />
           <Route path="/settings" element={<Settings />} />
-
         </Route>
       </Routes>
     </Router>
+  );
+}
+
+function App() {
+  return (
+    <BrandingProvider>
+      <AppContent />
+    </BrandingProvider>
   );
 }
 

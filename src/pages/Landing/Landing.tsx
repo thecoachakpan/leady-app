@@ -2,8 +2,10 @@ import { Link } from 'react-router-dom';
 import { Users, Receipt, ArrowRight, ShieldCheck, Zap, CheckCircle2, ChevronDown, Star } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import './Landing.css';
+import { useBranding } from '../../lib/BrandingContext';
 
 export const Landing = () => {
+  const { app_name, logo_url } = useBranding();
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -25,8 +27,12 @@ export const Landing = () => {
         <nav className={`landing-nav yoco-nav ${isScrolled ? 'nav-scrolled' : ''}`}>
           <div className="nav-container">
             <div className="logo yoco-logo">
-              <div className="logo-icon">L</div>
-              <span className="logo-text">Leady</span>
+              {logo_url ? (
+                <img src={logo_url} alt="Logo" className="logo-img" style={{ height: '32px' }} />
+              ) : (
+                <div className="logo-icon">{app_name[0]}</div>
+              )}
+              <span className="logo-text">{app_name}</span>
             </div>
             <div className="nav-links yoco-nav-links">
               <a href="#features" className="nav-link">Features</a>
@@ -43,7 +49,7 @@ export const Landing = () => {
           <div className="hero-content yoco-content">
             <div className="yoco-trust-badge">
               <Star size={16} fill="#fff" />
-              <span><strong className="yoco-cyan-text">5,431</strong> freelancers run smarter with Leady</span>
+              <span><strong className="yoco-cyan-text">5,431</strong> freelancers run smarter with {app_name}</span>
             </div>
             
             <h1 className="yoco-title">
@@ -127,7 +133,7 @@ export const Landing = () => {
           <div className="bento-card glass">
             <div className="feature-icon"><Receipt size={32} /></div>
             <h2>Auto Receipts</h2>
-            <p>Never manually write a receipt again. When marked paid, Leady instantly generates it.</p>
+            <p>Never manually write a receipt again. When marked paid, {app_name} instantly generates it.</p>
           </div>
           <div className="bento-card bento-wide glass" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
             <div style={{ flex: 1 }}>
@@ -141,7 +147,7 @@ export const Landing = () => {
 
       <section className="testimonials-section">
         <div className="section-header">
-          <h2 className="section-title">Why do Nigerian freelancers trust Leady?</h2>
+          <h2 className="section-title">Why do Nigerian freelancers trust {app_name}?</h2>
         </div>
         <div className="testimonials-grid">
           <div className="testimonial-card glass">
@@ -156,7 +162,7 @@ export const Landing = () => {
           </div>
           <div className="testimonial-card glass">
             <div className="stars"><Star fill="#f59e0b" color="#f59e0b"/><Star fill="#f59e0b" color="#f59e0b"/><Star fill="#f59e0b" color="#f59e0b"/><Star fill="#f59e0b" color="#f59e0b"/><Star fill="#f59e0b" color="#f59e0b"/></div>
-            <p className="testimonial-text">"Switching to Leady was the best business decision I have made. Client management has never been smoother."</p>
+            <p className="testimonial-text">"Switching to {app_name} was the best business decision I have made. Client management has never been smoother."</p>
             <p className="testimonial-author">— David, Software Engineer</p>
           </div>
         </div>
@@ -164,7 +170,7 @@ export const Landing = () => {
 
       <section id="how-it-works" className="how-it-works-section">
         <div className="section-header">
-          <h2>How Leady Works</h2>
+          <h2>How {app_name} Works</h2>
           <p>Get started in minutes and streamline your entire invoicing process.</p>
         </div>
         <div className="steps-container">
@@ -183,7 +189,7 @@ export const Landing = () => {
           <div className="step-card">
             <div className="step-number">3</div>
             <h3>Get Paid & Generate Receipts</h3>
-            <p>Mark invoices as paid and Leady automatically generates and sends a receipt to your client.</p>
+            <p>Mark invoices as paid and {app_name} automatically generates and sends a receipt to your client.</p>
           </div>
         </div>
       </section>
@@ -220,7 +226,7 @@ export const Landing = () => {
               <li><CheckCircle2 size={18} color="var(--success)" /> Unlimited Invoices</li>
               <li><CheckCircle2 size={18} color="var(--success)" /> Unlimited Clients</li>
               <li><CheckCircle2 size={18} color="var(--success)" /> Priority Support</li>
-              <li><CheckCircle2 size={18} color="var(--success)" /> Remove Leady Branding</li>
+              <li><CheckCircle2 size={18} color="var(--success)" /> Remove {app_name} Branding</li>
               <li><CheckCircle2 size={18} color="var(--success)" /> Custom Branding</li>
             </ul>
             <Link to="/auth?mode=signup" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Get Started Free</Link>
@@ -236,20 +242,20 @@ export const Landing = () => {
         <div className="faq-container">
           {[
             {
-              q: "Is Leady really free?",
+              q: "Is {app_name} really free?",
               a: "Yes! Our Freelancer plan is completely free and includes everything you need to start sending professional invoices. You only pay if you need to upgrade to Pro for unlimited invoices and clients."
             },
             {
-              q: "Can I use Leady outside of Nigeria?",
-              a: "While Leady is optimized for Nigerian businesses (with NGN as the default currency), you can change your default currency in settings and use it anywhere in the world."
+              q: "Can I use {app_name} outside of Nigeria?",
+              a: "While {app_name} is optimized for Nigerian businesses (with NGN as the default currency), you can change your default currency in settings and use it anywhere in the world."
             },
             {
               q: "How secure is my data?",
               a: "Security is our top priority. We use enterprise-grade encryption provided by Supabase. Your financial data and client information are completely isolated and secure."
             },
             {
-              q: "Does Leady handle the payment processing?",
-              a: "Currently, Leady is purely for invoicing and receipt generation. You still collect payments via your preferred method (bank transfer, Paystack, etc.) and mark the invoice as paid in Leady to generate the receipt."
+              q: "Does {app_name} handle the payment processing?",
+              a: "Currently, {app_name} is purely for invoicing and receipt generation. You still collect payments via your preferred method (bank transfer, Paystack, etc.) and mark the invoice as paid in {app_name} to generate the receipt."
             }
           ].map((faq, index) => (
             <div key={index} className={`faq-item glass ${activeFaq === index ? 'active' : ''}`} onClick={() => toggleFaq(index)}>
@@ -268,7 +274,7 @@ export const Landing = () => {
       <section className="cta-section">
         <div className="cta-container glass">
           <h2>Ready to streamline your invoicing?</h2>
-          <p>Join thousands of freelancers getting paid faster with Leady.</p>
+          <p>Join thousands of freelancers getting paid faster with {app_name}.</p>
           <Link to="/auth?mode=signup" className="btn btn-primary btn-lg">
             <span>Create Your Free Account</span>
             <ArrowRight size={20} />
@@ -280,8 +286,12 @@ export const Landing = () => {
         <div className="footer-content">
           <div className="footer-brand">
             <div className="logo">
-              <div className="logo-icon">L</div>
-              <span className="logo-text">Leady</span>
+              {logo_url ? (
+                <img src={logo_url} alt="Logo" style={{ height: '32px' }} />
+              ) : (
+                <div className="logo-icon">{app_name[0]}</div>
+              )}
+              <span className="logo-text">{app_name}</span>
             </div>
             <p>The effortless invoicing and receipt generation platform for modern freelancers.</p>
             <div className="social-links">
@@ -313,7 +323,7 @@ export const Landing = () => {
         </div>
         
         <div className="footer-bottom">
-          <p>© {new Date().getFullYear()} Leady Technologies. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {app_name} Technologies. All rights reserved.</p>
         </div>
       </footer>
     </div>

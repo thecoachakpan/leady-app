@@ -3,8 +3,10 @@ import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { Mail, Lock, Loader2, User, CheckCircle2 } from 'lucide-react';
 import './Auth.css';
+import { useBranding } from '../../lib/BrandingContext';
 
 export const Auth = () => {
+  const { app_name, logo_url } = useBranding();
   const [searchParams] = useSearchParams();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -63,8 +65,12 @@ export const Auth = () => {
       <div className="auth-left">
         <div className="auth-left-content">
           <div className="logo logo-header">
-            <div className="logo-icon">L</div>
-            <span className="logo-text">Leady</span>
+            {logo_url ? (
+              <img src={logo_url} alt="Logo" className="logo-img" />
+            ) : (
+              <div className="logo-icon">{app_name[0]}</div>
+            )}
+            <span className="logo-text">{app_name}</span>
           </div>
           
           {signupSuccess ? (
@@ -198,8 +204,12 @@ export const Auth = () => {
           </div>
 
           <div className="logo logo-footer">
-            <div className="logo-icon inverted">L</div>
-            <span className="logo-text inverted">Leady</span>
+            {logo_url ? (
+              <img src={logo_url} alt="Logo" style={{ height: '32px' }} />
+            ) : (
+              <div className="logo-icon inverted">{app_name[0]}</div>
+            )}
+            <span className="logo-text inverted">{app_name}</span>
           </div>
         </div>
       </div>

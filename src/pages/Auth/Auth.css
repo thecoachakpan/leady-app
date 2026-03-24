@@ -84,8 +84,7 @@
 
 .auth-right {
   flex: 1;
-  background-color: #f0fdf4; /* Light background similar to reference, wait, let's stick to Leady palette: extremely light blue! */
-  background-color: rgba(37, 99, 235, 0.05); /* very light primary variant to maintain colors */
+  background-color: rgba(37, 99, 235, 0.05); /* light primary variant to maintain colors */
   display: flex;
   position: relative;
   padding: 60px;

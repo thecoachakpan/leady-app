@@ -1,8 +1,10 @@
--- LEADY UNIFIED BOOTSTRAP SCHEMA
--- Run this script in your Supabase SQL Editor to initialize a fresh project.
+-- LEADY UNIFIED BOOTSTRAP SCHEMA (Idempotent Version)
+-- Run this script in your Supabase SQL Editor to initialize or reset a project.
+
+-- 0. Enable Extensions
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- 1. Create Tables
--- Profiles Table
 CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT NOT NULL,
@@ -20,7 +22,6 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- App Branding Settings
 CREATE TABLE IF NOT EXISTS public.app_settings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     app_name TEXT DEFAULT 'Leady',
@@ -29,10 +30,8 @@ CREATE TABLE IF NOT EXISTS public.app_settings (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Constraint for single row in app_settings
 CREATE UNIQUE INDEX IF NOT EXISTS single_app_settings ON public.app_settings ((true));
 
--- Clients Table
 CREATE TABLE IF NOT EXISTS public.clients (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   profile_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
@@ -42,7 +41,6 @@ CREATE TABLE IF NOT EXISTS public.clients (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Invoices Table
 CREATE TABLE IF NOT EXISTS public.invoices (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   profile_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
@@ -59,7 +57,6 @@ CREATE TABLE IF NOT EXISTS public.invoices (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Invoice Items Table
 CREATE TABLE IF NOT EXISTS public.invoice_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   invoice_id UUID NOT NULL REFERENCES public.invoices(id) ON DELETE CASCADE,
@@ -69,7 +66,6 @@ CREATE TABLE IF NOT EXISTS public.invoice_items (
   total DECIMAL(12, 2) NOT NULL DEFAULT 0
 );
 
--- Receipts Table
 CREATE TABLE IF NOT EXISTS public.receipts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   invoice_id UUID NOT NULL REFERENCES public.invoices(id) ON DELETE CASCADE,
@@ -84,29 +80,53 @@ ALTER TABLE public.invoices ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.invoice_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.receipts ENABLE ROW LEVEL SECURITY;
 
--- 3. RLS Policies
--- Profiles
+-- 3. Cleanup & Recreate Policies
+DO $$ 
+BEGIN
+    -- Profiles
+    DROP POLICY IF EXISTS "Users can view their own profile" ON public.profiles;
+    DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
+    DROP POLICY IF EXISTS "Users can insert their own profile" ON public.profiles;
+    
+    -- App Settings
+    DROP POLICY IF EXISTS "Anyone can view app settings" ON public.app_settings;
+    DROP POLICY IF EXISTS "Admin users can manage app settings" ON public.app_settings;
+    DROP POLICY IF EXISTS "Authenticated users can update app settings" ON public.app_settings;
+    
+    -- Clients
+    DROP POLICY IF EXISTS "Users can view their own clients" ON public.clients;
+    DROP POLICY IF EXISTS "Users can insert their own clients" ON public.clients;
+    DROP POLICY IF EXISTS "Users can update their own clients" ON public.clients;
+    DROP POLICY IF EXISTS "Users can delete their own clients" ON public.clients;
+    
+    -- Invoices
+    DROP POLICY IF EXISTS "Users can view their own invoices" ON public.invoices;
+    DROP POLICY IF EXISTS "Users can insert their own invoices" ON public.invoices;
+    DROP POLICY IF EXISTS "Users can update their own invoices" ON public.invoices;
+    DROP POLICY IF EXISTS "Users can delete their own invoices" ON public.invoices;
+    
+    -- Items
+    DROP POLICY IF EXISTS "Users can manage items of their own invoices" ON public.invoice_items;
+END $$;
+
+-- Policies
 CREATE POLICY "Users can view their own profile" ON public.profiles FOR SELECT USING (auth.uid() = id);
 CREATE POLICY "Users can update their own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 CREATE POLICY "Users can insert their own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
 
--- App Settings
 CREATE POLICY "Anyone can view app settings" ON public.app_settings FOR SELECT USING (true);
 CREATE POLICY "Admin users can manage app settings" ON public.app_settings FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
--- Clients
 CREATE POLICY "Users can view their own clients" ON public.clients FOR SELECT USING (auth.uid() = profile_id);
 CREATE POLICY "Users can insert their own clients" ON public.clients FOR INSERT WITH CHECK (auth.uid() = profile_id);
 CREATE POLICY "Users can update their own clients" ON public.clients FOR UPDATE USING (auth.uid() = profile_id);
 CREATE POLICY "Users can delete their own clients" ON public.clients FOR DELETE USING (auth.uid() = profile_id);
 
--- Invoices
 CREATE POLICY "Users can view their own invoices" ON public.invoices FOR SELECT USING (auth.uid() = profile_id);
 CREATE POLICY "Users can insert their own invoices" ON public.invoices FOR INSERT WITH CHECK (auth.uid() = profile_id);
 CREATE POLICY "Users can update their own invoices" ON public.invoices FOR UPDATE USING (auth.uid() = profile_id);
 CREATE POLICY "Users can delete their own invoices" ON public.invoices FOR DELETE USING (auth.uid() = profile_id);
 
--- Invoice Items
 CREATE POLICY "Users can manage items of their own invoices" ON public.invoice_items 
 FOR ALL USING (
   EXISTS (
@@ -121,7 +141,7 @@ INSERT INTO public.app_settings (app_name, primary_color)
 VALUES ('Leady', '#2563eb')
 ON CONFLICT DO NOTHING;
 
--- 5. Automation: Profile Creation on Signup
+-- 5. Functions & Triggers
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN

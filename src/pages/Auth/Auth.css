@@ -1,0 +1,320 @@
+.auth-page-split {
+  min-height: 100vh;
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+}
+
+.auth-left {
+  flex: 1;
+  background-color: var(--bg-card);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-xl);
+  position: relative;
+  min-height: 100vh;
+}
+
+.auth-left-content {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.logo-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: 12px;
+  align-self: flex-start;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--primary);
+  border-radius: var(--radius-sm);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.logo-icon.inverted {
+  background: white;
+  color: var(--primary);
+}
+
+.logo-text.inverted {
+  color: var(--primary);
+}
+
+.auth-form-container {
+  display: flex;
+  flex-direction: column;
+  margin: auto 0;
+}
+
+.auth-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.auth-header h1 {
+  font-size: 1.75rem;
+  margin-bottom: var(--spacing-xs);
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.auth-header p {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.auth-right {
+  flex: 1;
+  background-color: #f0fdf4; /* Light background similar to reference, wait, let's stick to Leady palette: extremely light blue! */
+  background-color: rgba(37, 99, 235, 0.05); /* very light primary variant to maintain colors */
+  display: flex;
+  position: relative;
+  padding: 60px;
+  overflow: hidden;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .auth-right {
+    display: none;
+  }
+}
+
+.auth-right-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
+
+.brand-statement {
+  font-size: 1.8rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--primary-hover);
+  max-width: 100%;
+  padding-right: 20px;
+  margin-top: 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.brand-graphic {
+  position: absolute;
+  right: -60px;
+  bottom: -60px;
+  width: 500px;
+  height: 500px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.graphic-block {
+  border-radius: 4px;
+}
+
+.main-block {
+  width: 320px;
+  height: 90%;
+  background-color: #0f172a; /* Slate 900, creating strong contrast */
+  background-image: radial-gradient(circle at center, rgba(37, 99, 235, 0.1) 0%, transparent 50%);
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.secondary-block {
+  width: 140px;
+  height: 300px;
+  background-color: var(--primary);
+  position: absolute;
+  right: 360px;
+  bottom: 0px;
+  z-index: 1;
+}
+
+.logo-footer {
+  margin-top: auto;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: white;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  width: fit-content;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1875rem;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.name-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 480px) {
+  .name-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.auth-form > .name-grid + .input-group,
+.auth-form > .input-group + .input-group {
+  margin-top: 8px;
+}
+
+.input-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--text-muted);
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 12px;
+  padding-left: 40px;
+  background: rgba(37, 99, 235, 0.02);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+}
+
+.input-wrapper input:focus {
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.error-message {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: rgba(239, 68, 68, 0.05);
+  color: var(--error);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  border: 1px solid rgba(239, 68, 68, 0.1);
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  margin-top: 0;
+  width: 100%;
+}
+
+.auth-submit-btn {
+  padding: 10px 24px;
+  font-weight: 600;
+  border-radius: 4px;
+  background-color: var(--primary);
+  color: white;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+
+.forgot-password-link {
+  background: transparent;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-main);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  padding: 0;
+  text-align: center;
+  width: 100%;
+  display: inline-block;
+}
+
+.forgot-password-link:hover {
+  color: var(--primary);
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.auth-footer {
+  margin-top: -12px;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  position: relative;
+  z-index: 10;
+}
+
+.btn-link {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}

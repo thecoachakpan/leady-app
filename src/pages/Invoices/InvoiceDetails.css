@@ -1,0 +1,137 @@
+.invoice-details-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.invoice-paper {
+  padding: 60px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  min-height: 1000px;
+}
+
+.paper-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.invoice-meta {
+  text-align: right;
+}
+
+.invoice-meta h1 {
+  font-size: 3rem;
+  margin: 0;
+  color: var(--text-main);
+}
+
+.paper-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.info-block label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  margin-bottom: var(--spacing-xs);
+  display: block;
+}
+
+.info-block.right {
+  text-align: right;
+}
+
+.meta-row {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  margin-bottom: 4px;
+}
+
+.meta-row label {
+  margin: 0;
+}
+
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.items-table th {
+  text-align: left;
+  padding: var(--spacing-md);
+  border-bottom: 2px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.items-table td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border);
+}
+
+.paper-footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-xl);
+}
+
+.footer-notes {
+  flex: 1;
+}
+
+.footer-summary {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.header-actions .btn-secondary.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* Receipt Styles */
+.invoice-paper.is-receipt {
+  position: relative;
+  overflow: hidden;
+}
+
+.receipt-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 8rem;
+  font-weight: 900;
+  color: rgba(34, 197, 94, 0.1);
+  border: 10px solid rgba(34, 197, 94, 0.1);
+  padding: 1rem 4rem;
+  border-radius: 20px;
+  pointer-events: none;
+  z-index: 0;
+  text-transform: uppercase;
+}
+
